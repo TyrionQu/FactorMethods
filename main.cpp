@@ -7,6 +7,7 @@
 
 #include <assert.h>
 #include <gmp.h>
+#include <unistd.h>
 
 #include "constant.h"
 
@@ -80,6 +81,66 @@ int find_coefficient(mpz_t n, unsigned int nBase, unsigned short *coefficient, u
     return 0;
 }
 
+int find_sqrt(const mpz_t n)
+{
+    mpz_t sqrt_n, next, expx;
+    mpz_t diff1, diff2;
+    mpz_init(expx);
+    mpz_set_ui(expx, 0);
+    mpz_init(sqrt_n);
+    mpz_set_ui(sqrt_n, 0);
+    mpz_init(diff1);
+    mpz_set_ui(diff1, 0);
+    mpz_init(diff2);
+    mpz_set_ui(diff2, 0);
+    mpz_init(next);
+
+    mpz_sqrt(sqrt_n, n);
+    mpz_set(next, sqrt_n);
+    mpz_mul(diff1, sqrt_n, sqrt_n);
+    mpz_sub(diff1, n, diff1);
+    if (mpz_cmp_ui(diff1, 0) == 0) {
+        cout << endl << "Found@@";
+        return 0;
+    }
+    mpz_mul_ui(diff2, next, 2);
+    mpz_add_ui(diff2, diff2, 1);
+
+    mpz_set(expx, diff2);
+
+    int64_t last = 0xffffffff;
+    mpz_t nextX2_1, x;
+    mpz_t xxx;
+    mpz_init(nextX2_1);
+    mpz_init(x);
+    mpz_init(xxx);
+    for (int64_t i = 0; i <= last; i++) {
+        mpz_add_ui(next, next, 1);
+        mpz_mul_ui(nextX2_1, next, 2);
+        mpz_add_ui(nextX2_1, nextX2_1, 1);
+        mpz_sub(diff2, nextX2_1, diff1);
+        mpz_add(expx, expx, diff2);
+        mpz_sqrt(x, expx);
+        mpz_mul(xxx, x, x);
+        mpz_sub(nextX2_1, expx, xxx);
+        if (i % 0xfffff == 1 ) {
+            cout << endl << setw(10) << right << i << " bits = " << mpz_sizeinbase(x, 2)  << " x = ";
+            mpz_out_str(stdout, 10, x);
+        }
+
+        if (mpz_cmp_ui(nextX2_1, 0) == 0) {
+            cout << endl << "found!!!";
+            break;
+        }
+//        cout << endl << "diff = ";
+//        mpz_out_str(stdout, 10, nextX2_1);
+    }
+    mpz_clear(nextX2_1);
+    mpz_clear(xxx);
+    mpz_clear(x);
+    return 0;
+}
+
 int main(int argc, char *argv[])
 {
     mpz_t n, result, remains;
@@ -98,9 +159,10 @@ int main(int argc, char *argv[])
     assert (flag == 0);
 
     // display n
-    cout << "n = ";
+    cout << "bits " << mpz_sizeinbase(n, 2) << " n = ";
     mpz_out_str(stdout, 10, n);
 
+//    find_sqrt(n);
     //mpz_div(result, n, g_nBase);
     mpz_fdiv_qr_ui(result, remains, n, g_nBase);
 
@@ -121,26 +183,26 @@ int main(int argc, char *argv[])
         mpz_mul(y, y, x);
         mpz_add_ui(y, y, coefficient[i]);
         mpz_clear(tmp);
-        cout << setw(5) <<coefficient[i];
+        cout << setw(5) << right <<coefficient[i];
         if (i != 0 && i != 1)
-            cout << " x^" << i << " + ";
+            cout << " * x^" << setw(3) << left << i << " + ";
         else if (i == 1)
-            cout << " x" << " + ";
+            cout << setw(8) << left << " * x" << " + ";
         if (i % 8 == 0)
             cout << endl;
     }
     if (mpz_cmp(y, n) == 0) {
         cout << endl << "Result is right!";
     }
-    cout << endl << "y = ";
-    mpz_out_str(stdout, 10, y);
+    cout << endl << "base = " << g_nBase << " y = ";
+    mpz_out_str(stdout, 16, y);
     mpz_clear(x);
     mpz_clear(y);
     mpz_clear(n);
     mpz_clear(result);
     mpz_clear(remains);
 	cout << endl << ii << " press enter to continue ..." << endl;
-	cin.ignore();
+//	cin.ignore();
     delete [] coefficient;
 	return 0;
 }

@@ -7,7 +7,7 @@ LIBPATH = -Wl,-R -Wl,./lib/ -Wl,-eh-frame-hdr
 TARGET = gnfs
 
 INCDIR = -I/usr/local/include/ -I/usr/include/jsoncpp
-LIB = $(LIBPATH) -lgmp -ljsoncpp -lpthread -lcpprest -lboost_system -lunwind
+LIB = $(LIBPATH) -lgmp -ljsoncpp -lpthread
 
 CPPFLAGS = -g -std=c++11
 LDFLAGS = 
