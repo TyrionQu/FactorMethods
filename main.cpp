@@ -100,40 +100,50 @@ int find_sqrt(const mpz_t n)
     mpz_mul(diff1, sqrt_n, sqrt_n);
     mpz_sub(diff1, n, diff1);
     if (mpz_cmp_ui(diff1, 0) == 0) {
-        cout << endl << "Found@@";
+        cout << endl << "Found@@" << endl;
         return 0;
     }
+    // diff2 = 2 * next + 1
     mpz_mul_ui(diff2, next, 2);
     mpz_add_ui(diff2, diff2, 1);
 
-    mpz_set(expx, diff2);
+    // expx = diff2
+    mpz_sub(expx, diff2, diff1);
 
-    int64_t last = 0xffffffff;
+    int64_t last = 0xffffffffff;
     mpz_t nextX2_1, x;
-    mpz_t xxx;
+    mpz_t xxx, lastx;
     mpz_init(nextX2_1);
     mpz_init(x);
     mpz_init(xxx);
+    mpz_init(lastx);
+    mpz_set_ui(lastx, 0);
     for (int64_t i = 0; i <= last; i++) {
+        // next = 2 * next + 1
         mpz_add_ui(next, next, 1);
         mpz_mul_ui(nextX2_1, next, 2);
         mpz_add_ui(nextX2_1, nextX2_1, 1);
-        mpz_sub(diff2, nextX2_1, diff1);
-        mpz_add(expx, expx, diff2);
+        // expx = expx + 2 * next + 1
+        mpz_add(expx, expx, nextX2_1);
         mpz_sqrt(x, expx);
         mpz_mul(xxx, x, x);
         mpz_sub(nextX2_1, expx, xxx);
         if (i % 0xfffff == 1 ) {
-            cout << endl << setw(10) << right << i << " bits = " << mpz_sizeinbase(x, 2)  << " x = ";
+            cout << endl << setw(14) << right << i << " bits = " << mpz_sizeinbase(x, 2)  << " x = ";
             mpz_out_str(stdout, 10, x);
+            mpz_sub(xxx, x, lastx);
+            cout << " diff = ";
+            mpz_out_str(stdout, 10, xxx);
         }
 
         if (mpz_cmp_ui(nextX2_1, 0) == 0) {
-            cout << endl << "found!!!";
+            cout << endl << "found!!!" << endl;
+            mpz_out_str(stdout, 10, x);
             break;
         }
 //        cout << endl << "diff = ";
 //        mpz_out_str(stdout, 10, nextX2_1);
+        mpz_set(lastx, x);
     }
     mpz_clear(nextX2_1);
     mpz_clear(xxx);
@@ -155,14 +165,14 @@ int main(int argc, char *argv[])
     mpz_set_ui(remains, 0);
 
     // Parse the input string as a base 10 number
-    flag = mpz_set_str(n, rsa_2048, 10);
+    flag = mpz_set_str(n, rsa_76, 10);
     assert (flag == 0);
 
     // display n
     cout << "bits " << mpz_sizeinbase(n, 2) << " n = ";
     mpz_out_str(stdout, 10, n);
 
-//    find_sqrt(n);
+    find_sqrt(n);
     //mpz_div(result, n, g_nBase);
     mpz_fdiv_qr_ui(result, remains, n, g_nBase);
 
