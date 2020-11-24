@@ -96,6 +96,8 @@ int find_sqrt(const mpz_t n)
     mpz_init(next);
 
     mpz_sqrt(sqrt_n, n);
+    cout << endl << "sqrt(n) " << mpz_sizeinbase(sqrt_n, 2) << " bits: ";
+    mpz_out_str(stdout, 10, sqrt_n);
     mpz_set(next, sqrt_n);
     mpz_mul(diff1, sqrt_n, sqrt_n);
     mpz_sub(diff1, n, diff1);
@@ -129,10 +131,10 @@ int find_sqrt(const mpz_t n)
         mpz_mul(xxx, x, x);
         mpz_sub(nextX2_1, expx, xxx);
         if (i % 0xfffff == 1 ) {
-            cout << endl << setw(14) << right << i << " bits = " << mpz_sizeinbase(x, 2)  << " x = ";
-            mpz_out_str(stdout, 10, x);
+            cout << endl << setw(10) << right << i << " x " << mpz_sizeinbase(x, 2)  << " bits, diff ";
+//            mpz_out_str(stdout, 10, x);
             mpz_sub(xxx, x, lastx);
-            cout << " diff = ";
+            cout << mpz_sizeinbase(xxx, 2) << " bits, diff = ";
             mpz_out_str(stdout, 10, xxx);
         }
 
@@ -165,7 +167,7 @@ int main(int argc, char *argv[])
     mpz_set_ui(remains, 0);
 
     // Parse the input string as a base 10 number
-    flag = mpz_set_str(n, rsa_76, 10);
+    flag = mpz_set_str(n, rsa_2048, 10);
     assert (flag == 0);
 
     // display n
