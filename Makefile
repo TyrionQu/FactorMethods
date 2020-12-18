@@ -1,7 +1,7 @@
 # Makefile for Linux
 #
 
-CC=g++
+CC=g++-8
 
 LIBPATH = -Wl,-R -Wl,./lib/ -Wl,-eh-frame-hdr
 TARGET = gnfs
@@ -9,7 +9,7 @@ TARGET = gnfs
 INCDIR = -I/usr/local/include/ -I/usr/include/jsoncpp
 LIB = $(LIBPATH) -lgmp -ljsoncpp -lpthread
 
-CPPFLAGS = -g -std=c++11
+CPPFLAGS = -g -std=c++2a
 LDFLAGS = 
 
 SOURCES  = .
