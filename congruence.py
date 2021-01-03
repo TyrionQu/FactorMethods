@@ -1,83 +1,59 @@
 from __future__ import print_function
 import array
-arr = array.array('i',[0])
-index_arr = array.array('i',[0, 0, 0, 0, 0, 0])
+import sys, getopt
 
+index_num = 20
 line=10
 n=31571
+n=2623297
 #n=32881
-#n=91
-#n=352426590011477
+#n=1522605027922533360535618378132637429718068114961380688657908494580122963258952897654000350692006139
+#n=2654580613
 
-for i in range(n):
-  arr.append(0)
+def calculate(bexp):
+  arr = [0] * n
+  index_arr = [0]*n
 
-print("     ",end="")
-for i in range(0, line):
-  index = i
-  if (index > 9):
-    print("    ", index, end="")
-  else:
-    print("     ",index, end="")
+  space=" "
+  print(space*8,end="")
+  for i in range(0, line):
+    index = i
+    print("{: 8d}".format(index), end="")
 
-#print("\n   ", i / line, end="   ")
+  base=137
+#  base=65537
+  result=1
+  for i in range(0, n + line - 1):
+    index = int(i / line)
+    remainder = i % line
+    if (remainder == 0):
+        print("\n{: 7d}:".format(index), end="")
 
-for i in range(0, n + line - 1):
-  index = i / line
-  if (i % line == 0):
-    if (index > 999):
-      print("\n",    index, end=" ")
-    elif (index > 99):
-      print("\n ",   index, end=" ")
-    elif (index > 9):
-      print("\n  ",  index, end=" ")
+    if (bexp == True):
+      cong = (result) % n
+      result = cong * base
     else:
-      print("\n   ", index, end=" ")
-  cong = (i ** 2) % n
-  arr[cong] = arr[cong] + 1
-  if (cong > 9999):
-    print("",     cong, end=" ")
-  elif (cong > 999):
-    print(" ",    cong, end=" ")
-  elif (cong > 99):
-    print("  ",   cong, end=" ")
-  elif (cong > 9):
-    print("   ",  cong, end=" ")
-  else:
-    print("    ", cong, end=" ")
+      cong = (i ** 2) % n
+    arr[cong] = arr[cong] + 1
+    print("{: 8d}".format(cong), end="")
 
-print("\n");
+  print("\n\n", space*7,end="")
+  for i in range(0, line):
+    index = i
+    print("{: 8d}".format(index), end="")
 
-print("     ",end="")
-for i in range(0, line):
-  index = i
-  if (index > 9):
-    print("    ", index, end="")
-  else:
-    print("     ",index, end="")
+  for i in range(0, n):
+    index = int(i / line)
+    if (i % line == 0):
+      print("\n{: 7d}:".format(index), end="")
+    print("{: 8d}".format(arr[i]), end="")
+    index_arr[arr[i]] = index_arr[arr[i]] + 1
 
-for i in range(0, n):
-  index = i / line
-  if (index == n / 2 / 10):
-    if (i % 10 == 0):
-      print("\nHow many numbers duplicate 0 times:", index_arr[0], end="\n")
-      print("How many numbers duplicate 2 times:", index_arr[2], end="\n")
-      print("How many numbers duplicate 4 times:", index_arr[4], end="\n")
-  if (i % line == 0):
-    if (index > 999):
-      print("\n",    index, end=" ")
-    elif (index > 99):
-      print("\n ",   index, end=" ")
-    elif (index > 9):
-      print("\n  ",  index, end=" ")
-    else:
-      print("\n   ", index, end=" ")
-  print("    ", arr[i], end=" ")
-  index_arr[arr[i]] = index_arr[arr[i]] + 1
+  print("\n ")
 
-print("\n ")
+  for i in range(0, index_num):
+    print("How many numbers duplicate ",i, " times:", index_arr[i], end="\n")
 
-print("How many numbers duplicate 0 times:", index_arr[0], end="\n")
-print("How many numbers duplicate 2 times:", index_arr[2], end="\n")
-print("How many numbers duplicate 4 times:", index_arr[4], end="\n")
-print("How many numbers duplicate 5 times:", index_arr[5], end="\n")
+if __name__ == "__main__":
+  calculate(False)
+  calculate(True)

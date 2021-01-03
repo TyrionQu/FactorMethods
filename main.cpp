@@ -215,7 +215,7 @@ void fermet_little_theorem_ex()
     mpz_mod(temp_p, temp_p, n);
     cout << endl << "(2^(p-1) - 1)(2^(q-1) - 1) mod n is :";
     mpz_out_str(stdout, 10, temp_p);
-    cout << endl << " ... so 2^(n-1) + 1 = 2^(p-1) + 2^(q-1) mod n" << endl;
+    cout << endl << " ... so 2^(p+q-2) + 1 = 2^(n-1) + 1 = 2^(p-1) + 2^(q-1) mod n" << endl;
     mpz_powm(temp_q, base, q_1, n);
     mpz_powm(temp_p, base, p_1, n);
     mpz_add(temp_p, temp_p, temp_q);
@@ -525,15 +525,17 @@ int main(int argc, char *argv[])
     cout << "bits " << mpz_sizeinbase(n, 2) << " n = ";
     mpz_out_str(stdout, 10, n);
     verify_result(p, q);
+    cout << __LINE__ << ": ok"<< endl;
     cout << endl << "Press <Enter> to continue...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cin.get();
-    find_loop(n);
-    find_sqrt(n);
+    flag = mpz_set_str(n, rsa_2048, 10);
+//    find_loop(n);
+//    find_sqrt(n);
 
     //mpz_div(result, n, g_nBase);
-    mpz_fdiv_qr_ui(result, remains, n, g_nBase);
+//    mpz_fdiv_qr_ui(result, remains, n, g_nBase);
 
+    cout << __LINE__ << ": ok"<< endl;
     int ii = get_index(n, g_nBase) + 1;
     unsigned short *coefficient = new unsigned short[ii];
     find_coefficient(n, g_nBase, coefficient, ii);
@@ -562,15 +564,17 @@ int main(int argc, char *argv[])
     if (mpz_cmp(y, n) == 0) {
         cout << endl << "Result is right!";
     }
-    cout << endl << "base = " << g_nBase << " y = ";
+    cout << endl << "base = " << g_nBase << " y = " << endl;
     mpz_out_str(stdout, 16, y);
+    cout << endl;
+    mpz_out_str(stdout, 10, y);
     mpz_clear(x);
     mpz_clear(y);
     mpz_clear(n);
     mpz_clear(result);
     mpz_clear(remains);
 	cout << endl << ii << " press enter to continue ..." << endl;
-//	cin.ignore();
+	cin.ignore();
     delete [] coefficient;
 	return 0;
 }
